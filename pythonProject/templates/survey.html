@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="סקר חוויית השירות">
+  <title>סקר משתמש</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='survey.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="דף הבית">
+      <span class="brand-mark" aria-hidden="true">✦</span>
+      <span>חוויית השירות</span>
+    </a>
+    <nav aria-label="ניווט ראשי">
+      <a class="nav-tab active" href="/" aria-current="page">סקר משתמש</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="survey-shell" aria-labelledby="survey-title">
+      <div class="intro">
+        <span class="eyebrow">הדעה שלך חשובה לנו</span>
+        <h1 id="survey-title">איך הייתה חוויית השירות שלך?</h1>
+        <p>נשמח לשמוע איך היה. מילוי הסקר קצר ויעזור לנו להמשיך להשתפר.</p>
+        <div class="survey-meta">
+          <span><span aria-hidden="true">◷</span> פחות מדקה</span>
+          <span><span aria-hidden="true">●</span> 3 שאלות חובה</span>
+        </div>
+      </div>
+
+      <form id="survey-form" novalidate>
+        <div id="form-error" class="form-error" role="alert" hidden></div>
+
+        <fieldset class="question-card">
+          <legend>
+            <span class="question-number">1</span>
+            <span>עד כמה הנציג/ה הבין/ה את הצורך או את מטרת הפנייה שלך?</span>
+            <span class="required">חובה</span>
+          </legend>
+          <div class="rating-scale">
+            <span class="scale-label">בכלל לא</span>
+            <div class="rating-options">
+              {% for value, emoji, label in [
+                (1, '😞', 'בכלל לא'),
+                (2, '🙁', 'במידה מועטה'),
+                (3, '😐', 'במידה בינונית'),
+                (4, '🙂', 'במידה רבה'),
+                (5, '🤩', 'במידה רבה מאוד')
+              ] %}
+              <label class="rating-option">
+                <input type="radio" name="understanding_rating" value="{{ value }}" required>
+                <span class="rating-face" aria-hidden="true">{{ emoji }}</span>
+                <span class="rating-number">{{ value }}</span>
+                <span class="sr-only">{{ label }}</span>
+              </label>
+              {% endfor %}
+            </div>
+            <span class="scale-label">במידה רבה מאוד</span>
+          </div>
+        </fieldset>
+
+        <fieldset class="question-card">
+          <legend>
+            <span class="question-number">2</span>
+            <span>האם קיבלת מענה למבוקשך במהלך השיחה?</span>
+            <span class="required">חובה</span>
+          </legend>
+          <div class="rating-scale">
+            <span class="scale-label">בכלל לא</span>
+            <div class="rating-options">
+              {% for value, emoji in [(1, '😞'), (2, '🙁'), (3, '😐'), (4, '🙂'), (5, '🤩')] %}
+              <label class="rating-option">
+                <input type="radio" name="resolution_rating" value="{{ value }}" required>
+                <span class="rating-face" aria-hidden="true">{{ emoji }}</span>
+                <span class="rating-number">{{ value }}</span>
+                <span class="sr-only">דירוג {{ value }} מתוך 5</span>
+              </label>
+              {% endfor %}
+            </div>
+            <span class="scale-label">באופן מלא</span>
+          </div>
+        </fieldset>
+
+        <fieldset class="question-card">
+          <legend>
+            <span class="question-number">3</span>
+            <span>עד כמה היית מרוצה מזמן ההמתנה למענה הנציג/ה?</span>
+            <span class="required">חובה</span>
+          </legend>
+          <div class="rating-scale">
+            <span class="scale-label">לא מרוצה</span>
+            <div class="rating-options">
+              {% for value, emoji in [(1, '😞'), (2, '🙁'), (3, '😐'), (4, '🙂'), (5, '🤩')] %}
+              <label class="rating-option">
+                <input type="radio" name="wait_time_rating" value="{{ value }}" required>
+                <span class="rating-face" aria-hidden="true">{{ emoji }}</span>
+                <span class="rating-number">{{ value }}</span>
+                <span class="sr-only">דירוג {{ value }} מתוך 5</span>
+              </label>
+              {% endfor %}
+            </div>
+            <span class="scale-label">מרוצה מאוד</span>
+          </div>
+        </fieldset>
+
+        <div class="question-card feedback-card">
+          <label for="feedback">
+            <span class="question-number">4</span>
+            <span>רוצה להוסיף משהו?</span>
+            <span class="optional">רשות</span>
+          </label>
+          <p>נשמח לשמוע כל הערה או הארה על חוויית השירות.</p>
+          <textarea id="feedback" name="feedback" maxlength="1000" rows="5"
+                    placeholder="אפשר לכתוב כאן..."></textarea>
+          <span class="character-count"><span id="character-count">0</span>/1000</span>
+        </div>
+
+        <button class="submit-button" type="submit">
+          <span>שליחת הסקר</span>
+          <span aria-hidden="true">←</span>
+        </button>
+      </form>
+
+      <section id="success-panel" class="success-panel" hidden aria-live="polite">
+        <div class="success-icon" aria-hidden="true">✓</div>
+        <h2>תודה רבה!</h2>
+        <p>התשובות שלך התקבלו בהצלחה ועוזרות לנו להעניק שירות טוב יותר.</p>
+      </section>
+    </section>
+  </main>
+
+  <script src="{{ url_for('static', filename='survey.js') }}" defer></script>
+</body>
+</html>
